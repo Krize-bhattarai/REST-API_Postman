@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Simple Weather App</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to right, #4facfe, #00f2fe);
+        text-align: center;
+        padding: 50px;
+        color: white;
+      }
+
+      .weather-container {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 30px;
+        border-radius: 15px;
+        width: 350px;
+        margin: auto;
+      }
+
+      input {
+        padding: 10px;
+        width: 70%;
+        border: none;
+        border-radius: 5px;
+        outline: none;
+      }
+
+      button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background: #ff9800;
+        color: white;
+        font-weight: bold;
+      }
+
+      button:hover {
+        background: #e68900;
+      }
+
+      .result {
+        margin-top: 20px;
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="weather-container">
+      <h2>🌤 Weather App</h2>
+      <input type="text" id="locationInput" placeholder="Enter city name" />
+      <button onclick="getWeather()">Check</button>
+
+      <div class="result" id="weatherResult"></div>
+    </div>
+
+    <script>
+      async function getWeather() {
+        const location = document.getElementById("locationInput").value;
+
+        if (location === "") {
+          alert("Please enter a location");
+          return;
+        }
+
+        const apiKey = "fbc8da1b5d1a4826a8891322262102";
+        const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}&aqi=yes`;
+
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+
+          if (data.error) {
+            document.getElementById("weatherResult").innerHTML =
+              "❌ Location not found!";
+            return;
+          }
+
+          const tempC = data.current.temp_c;
+          const condition = data.current.condition.text;
+          const city = data.location.name;
+          const country = data.location.country;
+
+          document.getElementById("weatherResult").innerHTML = `
+                    📍 ${city}, ${country} <br>
+                    🌡 Temperature: ${tempC}°C <br>
+                    ☁ Condition: ${condition}
+                `;
+        } catch (error) {
+          document.getElementById("weatherResult").innerHTML =
+            "⚠ Error fetching data!";
+        }
+      }
+    </script>
+  </body>
+</html>
